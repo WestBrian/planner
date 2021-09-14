@@ -1,10 +1,13 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import { AuthContextProvider } from '../providers/AuthProvider'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <AuthContextProvider>
+      <Component {...pageProps} />
+    </AuthContextProvider>
+  )
 }
 
 export default MyApp

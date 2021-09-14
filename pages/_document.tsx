@@ -9,8 +9,12 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap"
             rel="stylesheet"
           />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+            rel="stylesheet"
+          />
         </Head>
-        <body className="bg-gray-100 font-sans">
+        <body className="bg-gray-100 font-sans p-4">
           <Main />
           <NextScript />
         </body>

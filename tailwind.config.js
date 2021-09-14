@@ -3,9 +3,13 @@ module.exports = {
   darkMode: false,
   theme: {
     fontFamily: {
-      sans: ['Barlow', 'sans-serif']
+      sans: ['Inter', 'sans-serif']
     },
-    extend: {}
+    extend: {
+      width: {
+        container: '475px'
+      }
+    }
   },
   variants: {
     extend: {}
