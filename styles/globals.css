@@ -4,8 +4,10 @@
 
 button,
 input,
-optgroup,
-select,
+select {
+  height: 48px;
+}
+
 textarea {
-  height: 36px;
+  height: 96px;
 }

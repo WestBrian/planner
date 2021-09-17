@@ -8,6 +8,11 @@ module.exports = {
     extend: {
       width: {
         container: '475px'
+      },
+      height: {
+        'card-small': '68px',
+        'card-medium': '84px',
+        'card-large': '100px'
       }
     }
   },
