@@ -17,3 +17,7 @@ if (!firebase.apps.length) {
 
 export const auth = firebase.auth()
 export const firestore = firebase.firestore()
+export const getTimestamp = () =>
+  firebase.firestore.FieldValue.serverTimestamp()
+export const arrayUnion = (data: any) =>
+  firebase.firestore.FieldValue.arrayUnion(data)
