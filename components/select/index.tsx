@@ -31,3 +31,5 @@ export const Select: FC<SelectProps> = forwardRef<
     </div>
   )
 })
+
+Select.displayName = 'Select'

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { TimeCard } from '../../time-card'
 import {
   parse,
@@ -29,6 +29,7 @@ const childVariants: Variants = {
 
 export const Dashboard = () => {
   const [values] = useTasks()
+  const [tasks, setTasks] = useState<Task[]>([])
 
   function startTimeToDate(startTime: string) {
     const now = new Date()
@@ -40,7 +41,10 @@ export const Dashboard = () => {
     return new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour)
   }
 
-  function getPartialFreeTime(hour: Date, tasksInHour: Task[]) {
+  const getPartialFreeTime = useCallback(function (
+    hour: Date,
+    tasksInHour: Task[]
+  ) {
     const partials: Task[] = []
 
     const busyIntervals: Interval[] = tasksInHour.map((task) => ({
@@ -74,47 +78,45 @@ export const Dashboard = () => {
     }
 
     return partials
-  }
+  },
+  [])
 
-  function fillInFreeTime(tasks: Task[]) {
-    const startHour = 8
-    const endHour = 22
-    const freeTimes: Task[] = []
+  const fillInFreeTime = useCallback(
+    function (tasks: Task[]) {
+      const startHour = 8
+      const endHour = 22
+      const freeTimes: Task[] = []
 
-    for (let i = startHour; i < endHour; i++) {
-      const hour = getDateFromHour(i)
-      const tasksInHour = tasks.filter((task) =>
-        isSameHour(startTimeToDate(task.startTime), hour)
-      )
-      if (tasksInHour.length > 0) {
-        // getPartialFreeTime(hour, tasksInHour).forEach((partial) =>
-        //   freeTimes.push(partial)
-        // )
-
-        const partials = getPartialFreeTime(hour, tasksInHour)
-        partials.forEach((partial) => freeTimes.push(partial))
-      } else {
-        freeTimes.push({
-          name: 'Free time',
-          desc: 'Do whatever you want!',
-          startTime: format(hour, 'HH:mm'),
-          length: '60',
-          type: 'free-time',
-          completed: false
-        })
+      for (let i = startHour; i < endHour; i++) {
+        const hour = getDateFromHour(i)
+        const tasksInHour = tasks.filter((task) =>
+          isSameHour(startTimeToDate(task.startTime), hour)
+        )
+        if (tasksInHour.length > 0) {
+          const partials = getPartialFreeTime(hour, tasksInHour)
+          partials.forEach((partial) => freeTimes.push(partial))
+        } else {
+          freeTimes.push({
+            name: 'Free time',
+            desc: 'Do whatever you want!',
+            startTime: format(hour, 'HH:mm'),
+            length: '60',
+            type: 'free-time',
+            completed: false
+          })
+        }
       }
-    }
 
-    setTasks([...tasks, ...freeTimes])
-  }
-
-  const [tasks, setTasks] = useState<Task[]>([])
+      setTasks([...tasks, ...freeTimes])
+    },
+    [setTasks, getPartialFreeTime]
+  )
 
   useEffect(() => {
     if (values) {
       fillInFreeTime(values.tasks)
     }
-  }, [values])
+  }, [values, fillInFreeTime])
 
   return (
     <>

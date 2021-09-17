@@ -23,3 +23,5 @@ export const Input: FC<InputProps> = forwardRef<HTMLInputElement, InputProps>(
     )
   }
 )
+
+Input.displayName = 'Input'
