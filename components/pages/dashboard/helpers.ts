@@ -46,11 +46,24 @@ export function computeFreeTime(tasks: Task[]): Task[] {
     const startOfHour = hourToDate(i)
     const endOfHour = addHours(startOfHour, 1)
 
+    // const hourHasTasks = tasks.some((task) =>
+    //   isWithinInterval(dateStrToDate(task.startTime), {
+    //     start: startOfHour,
+    //     end: endOfHour
+    //   })
+    // )
+
     const hourHasTasks = tasks.some((task) =>
-      isWithinInterval(dateStrToDate(task.startTime), {
-        start: startOfHour,
-        end: endOfHour
-      })
+      areIntervalsOverlapping(
+        {
+          start: dateStrToDate(task.startTime),
+          end: addMinutes(dateStrToDate(task.startTime), Number(task.length))
+        },
+        {
+          start: startOfHour,
+          end: endOfHour
+        }
+      )
     )
 
     if (hourHasTasks) {

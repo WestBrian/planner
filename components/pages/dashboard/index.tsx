@@ -4,6 +4,8 @@ import { NewTaskButton } from '../../new-task-button'
 import { motion, Variants } from 'framer-motion'
 import { Task, useTasks } from '../../../services/tasks'
 import { computeFreeTime, sortTasks, dateStrToDate } from './helpers'
+import { DaySelector } from '../../day-selector'
+import { Days } from '../../day-selector/types'
 
 const childVariants: Variants = {
   visible: (custom: number) => ({
@@ -20,7 +22,8 @@ const childVariants: Variants = {
 }
 
 export const Dashboard = () => {
-  const [values] = useTasks()
+  const [currentDay, setCurrentDay] = useState<Days>('today')
+  const [values] = useTasks(currentDay)
   const [tasks, setTasks] = useState<Task[]>([])
 
   useEffect(() => {
@@ -32,6 +35,10 @@ export const Dashboard = () => {
   return (
     <>
       <motion.div className="w-full mx-auto" style={{ maxWidth: 960 }}>
+        <DaySelector
+          currentDay={currentDay}
+          onChange={(day) => setCurrentDay(day)}
+        />
         {tasks.map((task, index) => (
           <motion.div
             initial={'hidden'}

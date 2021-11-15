@@ -1,7 +1,8 @@
 import { auth, firestore, arrayUnion } from './firebase'
-import { format } from 'date-fns'
+import { format, addDays } from 'date-fns'
 import { useDocumentData } from 'react-firebase-hooks/firestore'
 import { TaskType } from '../components/time-card/types'
+import { Days } from '../components/day-selector/types'
 
 const getNowDocRef = () => {
   const { currentUser } = auth
@@ -18,6 +19,21 @@ const getNowDocRef = () => {
   return null
 }
 
+const getTomorrowDocRef = () => {
+  const { currentUser } = auth
+
+  if (currentUser) {
+    const now = new Date()
+    return firestore
+      .collection('users')
+      .doc(currentUser.uid)
+      .collection('tasks')
+      .doc(format(addDays(now, 1), 'MM-dd-y'))
+  }
+
+  return null
+}
+
 export interface Task {
   name: string
   desc: string
@@ -27,13 +43,14 @@ export interface Task {
   completed: boolean
 }
 
-export const addTask = (payload: Task) => {
-  const nowRef = getNowDocRef()
+export const addTask = (payload: Task & { day: Days }) => {
+  const { day, ...task } = payload
+  const ref = day === 'today' ? getNowDocRef() : getTomorrowDocRef()
 
-  if (nowRef) {
-    nowRef.set(
+  if (ref) {
+    ref.set(
       {
-        tasks: arrayUnion(payload)
+        tasks: arrayUnion(task)
       },
       {
         merge: true
@@ -42,7 +59,8 @@ export const addTask = (payload: Task) => {
   }
 }
 
-export const useTasks = () => {
-  const nowRef = getNowDocRef()
-  return useDocumentData<{ tasks: Task[] }>(nowRef)
+export const useTasks = (day: Days = 'today') => {
+  return useDocumentData<{ tasks: Task[] }>(
+    day === 'today' ? getNowDocRef() : getTomorrowDocRef()
+  )
 }

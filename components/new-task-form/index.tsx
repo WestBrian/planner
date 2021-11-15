@@ -3,13 +3,16 @@ import { motion, Variants } from 'framer-motion'
 import { Label } from '../label'
 import { Input } from '../input'
 import { Textarea } from '../textarea'
-import { TaskLength } from '../time-card/types'
+import { TaskLength, TaskType } from '../time-card/types'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { Button } from '../button'
 import { addTask } from '../../services/tasks'
 import { Select } from '../select'
 import range from 'lodash/range'
 import { parse, format } from 'date-fns'
+import { TaskTypes } from './TaskTypes'
+import { BlockRadio } from './BlockRadio'
+import { Days, days } from '../day-selector/types'
 
 const parentVariants: Variants = {
   visible: {
@@ -34,11 +37,13 @@ const childVariants: Variants = {
 const lengths: TaskLength[] = [15, 30, 45, 60]
 
 interface FormState {
+  day: Days
   hour: string
   minutes: string
   name: string
   length: string
   desc: string
+  type: TaskType
 }
 
 const FormWrapper: FC = ({ children }) => {
@@ -62,10 +67,15 @@ const FormWrapper: FC = ({ children }) => {
   )
 }
 
-export const NewTaskForm: FC = () => {
+interface NewTaskFormProps {
+  onAfterSubmit?: () => void
+}
+
+export const NewTaskForm: FC<NewTaskFormProps> = ({ onAfterSubmit }) => {
   const { register, handleSubmit, watch } = useForm<FormState>()
 
   const selectedLength = watch('length')
+  const selectedType = watch('type')
 
   const onSubmit: SubmitHandler<FormState> = (data) => {
     const { hour, minutes, ...rest } = data
@@ -73,15 +83,18 @@ export const NewTaskForm: FC = () => {
     addTask({
       ...rest,
       startTime: format(startTime, 'HH:mm'),
-      type: 'hobby',
       completed: false
     })
+    if (onAfterSubmit) {
+      onAfterSubmit()
+    }
   }
 
   return (
     <div className="text-gray-900">
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormWrapper>
+          <Select label={'Day'} options={[...days]} {...register('day')} />
           <div className="flex flex-row gap-4 md:gap-12">
             <Select
               label={'Start Time (hour)'}
@@ -103,29 +116,14 @@ export const NewTaskForm: FC = () => {
             <Label>Time (Minutes)</Label>
             <div className="flex flex-row flex-wrap gap-4 md:gap-12">
               {lengths.map((length) => (
-                <div
+                <BlockRadio
                   key={`l${length}`}
-                  className={`rounded text-white flex justify-center items-center p-4 w-16 h-16 cursor-pointer relative hover:bg-green-600 ${
-                    String(length) === selectedLength
-                      ? 'bg-green-700'
-                      : 'bg-green-500'
-                  }`}
-                >
-                  <input
-                    {...register('length')}
-                    id={`l${length}`}
-                    className="sr-only"
-                    type="radio"
-                    value={String(length)}
-                    name="length"
-                  />
-                  <label
-                    htmlFor={`l${length}`}
-                    className="font-semibold text-3xl cursor-pointer w-16 h-16 absolute inset-0 flex justify-center items-center"
-                  >
-                    {length}
-                  </label>
-                </div>
+                  label={String(length)}
+                  value={String(length)}
+                  name="length"
+                  selected={String(length) === selectedLength}
+                  register={register}
+                />
               ))}
             </div>
           </div>
@@ -134,6 +132,7 @@ export const NewTaskForm: FC = () => {
             placeholder="Cook and eat a healthy breakfast"
             {...register('desc')}
           />
+          <TaskTypes selected={selectedType} register={register} />
           <div className="flex flex-col md:flex-row justify-end gap-4">
             <Button type="submit" variant="tertiary">
               Add and create another task

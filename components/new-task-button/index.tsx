@@ -63,7 +63,7 @@ export const NewTaskButton = () => {
               <XIcon />
             </button>
           </div>
-          <NewTaskForm />
+          <NewTaskForm onAfterSubmit={close} />
         </div>
       ) : (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>

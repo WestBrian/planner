@@ -6,10 +6,13 @@ import {
   typeToMetaColor,
   typeToTitleColor,
   typeToInteractableBackgroundColor,
-  typeToInteractableTextColor
+  typeToInteractableTextColor,
+  typeToHoverBgColor,
+  typeToHoverInteractableBackgroundColor,
+  getEmoji
 } from './helpers'
 import classNames from 'classnames'
-import { ClockIcon, CheckCircleIcon } from '@heroicons/react/outline'
+import { ClockIcon, CheckIcon } from '@heroicons/react/outline'
 import { format, addMinutes } from 'date-fns'
 
 interface TimeCardProps {
@@ -30,12 +33,16 @@ export const TimeCard: FC<TimeCardProps> = ({
   type
 }) => {
   const wrapperClasses = classNames({
+    block: true,
+    'w-full': true,
     'px-4': true,
     'py-2': true,
     [typeToBgColor(type)]: true,
+    [typeToHoverBgColor(type)]: true,
     'border-l-8': true,
     [typeToBorderColor(type)]: true,
-    'rounded-lg': true,
+    'rounded-l-lg': type !== 'free-time',
+    'rounded-lg': type === 'free-time',
     flex: true,
     'flex-row': true,
     'items-center': true,
@@ -67,35 +74,38 @@ export const TimeCard: FC<TimeCardProps> = ({
   })
 
   const buttonClasses = classNames({
-    'w-10': true,
-    'p-1.5': true,
+    'p-4': true,
     [typeToInteractableBackgroundColor(type)]: true,
-    'rounded-full': true,
+    [typeToHoverInteractableBackgroundColor(type)]: true,
+    'rounded-r-lg': true,
     [typeToInteractableTextColor(type)]: true,
     'h-auto': true
   })
 
   return (
-    <div className={wrapperClasses}>
-      <div className="flex flex-col justify-between h-full">
-        <div>
-          <h2 className={titleClasses}>{title}</h2>
-          {desc && taskTime > 30 && <p className={descClasses}>{desc}</p>}
+    <div className="flex flex-row">
+      <button className={wrapperClasses}>
+        <div className="flex flex-col justify-between text-left h-full">
+          <div>
+            <div className="flex flex-row items-center gap-3">
+              <span>{getEmoji(type)}</span>
+              <h2 className={titleClasses}>{title}</h2>
+            </div>
+            {desc && taskTime > 30 && <p className={descClasses}>{desc}</p>}
+          </div>
+          <div className={timeClasses}>
+            <ClockIcon className="w-3" />
+            <span>
+              {format(startTime, 'hh:mm')} -{' '}
+              {format(addMinutes(startTime, taskTime), 'hh:mm aa')}
+            </span>
+          </div>
         </div>
-        <div className={timeClasses}>
-          <ClockIcon className="w-3" />
-          <span>
-            {format(startTime, 'hh:mm')} -{' '}
-            {format(addMinutes(startTime, taskTime), 'hh:mm aa')}
-          </span>
-        </div>
-      </div>
+      </button>
       {type !== 'free-time' && (
-        <div>
-          <button className={buttonClasses} aria-label={`Complete ${title}`}>
-            <CheckCircleIcon />
-          </button>
-        </div>
+        <button className={buttonClasses} aria-label={`Complete ${title}`}>
+          <CheckIcon className="w-6" />
+        </button>
       )}
     </div>
   )
