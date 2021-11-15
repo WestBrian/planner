@@ -32,7 +32,9 @@ export const NewTaskButton = () => {
   const buttonClasses = classNames({
     block: true,
     'text-white': true,
-    'p-4': true,
+    'px-4': !isOpen,
+    'px-8': isOpen,
+    'py-4': true,
     'bg-green-500': true,
     'hover:bg-green-600': true,
     fixed: true,
@@ -40,7 +42,7 @@ export const NewTaskButton = () => {
     'right-8': true,
     'origin-bottom-right': true,
     'overflow-y-scroll': true,
-    'shadow-lg': open
+    'shadow-lg': true
   })
 
   return (
@@ -55,7 +57,8 @@ export const NewTaskButton = () => {
     >
       {isOpen ? (
         <div>
-          <div className="flex flex-row justify-end">
+          <div className="flex flex-row justify-between">
+            <p className="font-semibold text-gray-500 uppercase">New Task</p>
             <button className="w-8 text-gray-900" onClick={close}>
               <XIcon />
             </button>
