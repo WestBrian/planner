@@ -42,14 +42,19 @@ interface FormState {
 }
 
 const FormWrapper: FC = ({ children }) => {
+  const childrenLength = Children.toArray(children).length
+
   return (
     <motion.div
       initial={'hidden'}
       animate={'visible'}
       variants={parentVariants}
     >
-      {Children.map(children, (child) => (
-        <motion.div variants={childVariants} className="mb-8">
+      {Children.map(children, (child, index) => (
+        <motion.div
+          variants={childVariants}
+          className={childrenLength - 1 !== index ? 'mb-8' : ''}
+        >
           {child}
         </motion.div>
       ))}
@@ -74,10 +79,9 @@ export const NewTaskForm: FC = () => {
   }
 
   return (
-    <div className="text-gray-900 px-4">
+    <div className="text-gray-900">
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormWrapper>
-          <p className="font-semibold text-gray-500 uppercase mb-8">New Task</p>
           <div className="flex flex-row gap-4 md:gap-12">
             <Select
               label={'Start Time (hour)'}

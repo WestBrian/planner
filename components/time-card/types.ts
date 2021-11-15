@@ -6,4 +6,6 @@ export type TaskType =
   | 'fun'
   | 'free-time'
 
-export type TaskLength = 15 | 30 | 45 | 60
+export const taskLengths = [15, 30, 45, 60] as const
+
+export type TaskLength = typeof taskLengths[number]
