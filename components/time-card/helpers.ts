@@ -19,6 +19,25 @@ export function typeToBgColor(type: TaskType) {
   }
 }
 
+export function typeToHoverBgColor(type: TaskType) {
+  switch (type) {
+    case 'work':
+      return 'hover:bg-red-300'
+    case 'well-being':
+      return 'hover:bg-green-300'
+    case 'hobby':
+      return 'hover:bg-blue-300'
+    case 'fun':
+      return 'hover:bg-yellow-300'
+    case 'free-time':
+      return 'hover:bg-gray-300'
+    case 'chore':
+      return 'hover:bg-indigo-300'
+    default:
+      return 'hover:bg-red-300'
+  }
+}
+
 export function typeToInteractableBackgroundColor(type: TaskType) {
   switch (type) {
     case 'work':
@@ -35,6 +54,25 @@ export function typeToInteractableBackgroundColor(type: TaskType) {
       return 'bg-indigo-500'
     default:
       return 'bg-red-500'
+  }
+}
+
+export function typeToHoverInteractableBackgroundColor(type: TaskType) {
+  switch (type) {
+    case 'work':
+      return 'hover:bg-red-600'
+    case 'well-being':
+      return 'hover:bg-green-600'
+    case 'hobby':
+      return 'hover:bg-blue-600'
+    case 'fun':
+      return 'hover:bg-yellow-600'
+    case 'free-time':
+      return 'hover:bg-gray-600'
+    case 'chore':
+      return 'hover:bg-indigo-600'
+    default:
+      return 'hover:bg-red-600'
   }
 }
 
@@ -111,5 +149,24 @@ export function typeToMetaColor(type: TaskType) {
       return 'text-indigo-800'
     default:
       return 'text-red-800'
+  }
+}
+
+export function getEmoji(type: TaskType) {
+  switch (type) {
+    case 'chore':
+      return '🧼'
+    case 'free-time':
+      return '🛋'
+    case 'fun':
+      return '🎉'
+    case 'hobby':
+      return '🎨'
+    case 'well-being':
+      return '🧘🏻'
+    case 'work':
+      return '💼'
+    default:
+      return '🛋'
   }
 }
