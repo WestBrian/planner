@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { TimeCard } from '../../time-card'
 import { NewTaskButton } from '../../new-task-button'
 import { motion, Variants } from 'framer-motion'
@@ -6,6 +6,7 @@ import { Task, useTasks } from '../../../services/tasks'
 import { computeFreeTime, sortTasks, dateStrToDate } from './helpers'
 import { DaySelector } from '../../day-selector'
 import { Days } from '../../day-selector/types'
+import { useRouter } from 'next/router'
 
 const childVariants: Variants = {
   visible: (custom: number) => ({
@@ -22,15 +23,17 @@ const childVariants: Variants = {
 }
 
 export const Dashboard = () => {
+  const router = useRouter()
   const [currentDay, setCurrentDay] = useState<Days>('today')
   const [values] = useTasks(currentDay)
-  const [tasks, setTasks] = useState<Task[]>([])
+  const [tasks, setTasks] = useState<(Task & { id: string })[]>([])
+
+  const userTasks = useMemo(() => values || [], [values])
 
   useEffect(() => {
-    const tasks = values?.tasks || []
-    const freeTimes = computeFreeTime(tasks)
-    setTasks(sortTasks([...tasks, ...freeTimes]))
-  }, [values])
+    const freeTimes = computeFreeTime(userTasks)
+    setTasks(sortTasks([...userTasks, ...freeTimes]))
+  }, [userTasks])
 
   return (
     <>
@@ -51,15 +54,16 @@ export const Dashboard = () => {
             <TimeCard
               title={task.name}
               desc={task.desc}
-              type={task.type || 'hobby'}
+              type={task.type}
               startTime={dateStrToDate(task.startTime)}
               taskTime={Number(task.length) as any}
-              completed={false}
+              completed={task.completed}
+              onEdit={() => router.push(`/${task.id}/edit`)}
             />
           </motion.div>
         ))}
       </motion.div>
-      <NewTaskButton />
+      <NewTaskButton userTasks={userTasks} selectedDay={currentDay} />
     </>
   )
 }

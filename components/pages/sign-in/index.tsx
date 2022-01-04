@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react'
-import { Input } from '../../input'
-import { Button } from '../../button'
+import { TextField } from '../../textfield'
+import { Button } from '@chakra-ui/react'
 import { signIn } from '../../../services/auth'
 import { useRouter } from 'next/router'
 
@@ -14,7 +14,9 @@ export const SignIn = () => {
     try {
       signIn({ email, password })
       router.push('/dashboard')
-    } catch (err) {}
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   return (
@@ -24,14 +26,14 @@ export const SignIn = () => {
         onSubmit={handleSubmit}
       >
         <h1 className="text-gray-500 uppercase font-semibold">Sign In</h1>
-        <Input
+        <TextField
           value={email}
           type="email"
           label="Email"
           placeholder="test@test.com"
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Input
+        <TextField
           value={password}
           label="Password"
           type="password"

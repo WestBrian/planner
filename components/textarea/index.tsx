@@ -1,27 +1,29 @@
-import { FC, TextareaHTMLAttributes, forwardRef } from 'react'
+import { FC, forwardRef } from 'react'
+import { FieldWrapper, FieldWrapperProps } from '../field-wrapper'
+import {
+  Textarea as ChakraTextarea,
+  TextareaProps as ChakraTextareaProps
+} from '@chakra-ui/react'
 import kebabCase from 'lodash/kebabCase'
-import { Label } from '../label'
 
-interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
-  label: string
-}
+type TextareaProps = Pick<FieldWrapperProps, 'label'> & ChakraTextareaProps
 
 export const Textarea: FC<TextareaProps> = forwardRef<
   HTMLTextAreaElement,
   TextareaProps
 >(({ label, ...textareaProps }, ref) => {
-  const inputId = kebabCase(label)
+  const id = kebabCase(label)
 
   return (
-    <div className="flex flex-col gap-2">
-      <Label htmlFor={inputId}>{label}</Label>
-      <textarea
-        id={inputId}
+    <FieldWrapper id={id} label={label}>
+      <ChakraTextarea
         ref={ref}
-        className="rounded-lg bg-gray-200 p-2 placeholder-gray-400 w-full"
         {...textareaProps}
+        id={id}
+        size="lg"
+        variant="filled"
       />
-    </div>
+    </FieldWrapper>
   )
 })
 

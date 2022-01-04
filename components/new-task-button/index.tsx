@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import { motion } from 'framer-motion'
 import { PlusIcon, XIcon } from '@heroicons/react/solid'
 import classNames from 'classnames'
 import { useWindowSize } from '@react-hook/window-size'
-import { NewTaskForm } from '../new-task-form'
+import { addTask, Task } from '../../services/tasks'
+import { Days } from '../day-selector/types'
+import { FormState, TaskForm } from '../task-form'
+import { parse } from 'date-fns'
+import { formStateToTask } from '../task-form/helpers'
 
 const variants = {
   open: (custom: { width: number; height: number }) => ({
@@ -22,16 +26,33 @@ const variants = {
   }
 }
 
-export const NewTaskButton = () => {
+interface NewTaskButtonProps {
+  userTasks: Task[]
+  selectedDay: Days
+}
+
+export const NewTaskButton: FC<NewTaskButtonProps> = ({
+  userTasks,
+  selectedDay
+}) => {
   const [isOpen, setIsOpen] = useState(false)
   const [width, height] = useWindowSize()
 
   const open = () => setIsOpen(true)
   const close = () => setIsOpen(false)
 
+  function handleSubmit(values: FormState) {
+    try {
+      addTask(formStateToTask(values))
+      close()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   const buttonClasses = classNames({
     block: true,
-    'text-white': true,
+    'text-white': !isOpen,
     'px-4': !isOpen,
     'px-8': isOpen,
     'py-4': true,
@@ -56,15 +77,21 @@ export const NewTaskButton = () => {
       onClick={!isOpen ? open : undefined}
     >
       {isOpen ? (
-        <div>
-          <div className="flex flex-row justify-between">
-            <p className="font-semibold text-gray-500 uppercase">New Task</p>
-            <button className="w-8 text-gray-900" onClick={close}>
-              <XIcon />
-            </button>
-          </div>
-          <NewTaskForm onAfterSubmit={close} />
-        </div>
+        <TaskForm
+          heading="NEW TASK"
+          submitButtonText="Add task"
+          defaultValues={{
+            day: selectedDay,
+            taskName: '',
+            startTime: parse('8:00', 'HH:mm', new Date()),
+            taskLength: '60',
+            taskType: 'chore',
+            description: ''
+          }}
+          currentTasks={userTasks}
+          onClose={close}
+          onSubmit={handleSubmit}
+        />
       ) : (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <PlusIcon />
