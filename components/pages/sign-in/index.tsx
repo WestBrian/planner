@@ -14,7 +14,9 @@ export const SignIn = () => {
     try {
       signIn({ email, password })
       router.push('/dashboard')
-    } catch (err) {}
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   return (
