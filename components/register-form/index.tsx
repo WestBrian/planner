@@ -1,6 +1,6 @@
 import { useState, FormEvent, FC } from 'react'
-import { Input } from '../input'
-import { Button } from '../button'
+import { TextField } from '../textfield'
+import { Button } from '@chakra-ui/react'
 
 export interface RegisterFormValues {
   email: string
@@ -27,14 +27,14 @@ export const RegisterForm: FC<RegisterFormProps> = ({ handleSubmit }) => {
     <form onSubmit={_handleSubmit}>
       <div className="w-full md:w-container mx-auto p-4 bg-white shadow rounded-lg flex flex-col gap-4">
         <h1 className="text-gray-500 uppercase font-semibold">Register</h1>
-        <Input
+        <TextField
           label="Email"
           type="email"
           placeholder="test@test.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Input
+        <TextField
           label="Password"
           type="password"
           placeholder="*********"

@@ -10,6 +10,9 @@
     "format": "prettier '**/*.{js,jsx,ts,tsx,json,css,scss,html,md}' --write"
   },
   "dependencies": {
+    "@chakra-ui/react": "^1.7.2",
+    "@emotion/react": "^11.7.0",
+    "@emotion/styled": "^11.6.0",
     "@heroicons/react": "^1.0.4",
     "@react-hook/window-size": "^3.0.7",
     "classnames": "^2.3.1",

@@ -1,34 +1,58 @@
-import { FC, SelectHTMLAttributes, forwardRef } from 'react'
-import { Label } from '../label'
+import { FC, forwardRef } from 'react'
+import { FieldWrapper, FieldWrapperProps } from '../field-wrapper'
+import {
+  Select as ChakraSelect,
+  SelectProps as ChakraSelectProps
+} from '@chakra-ui/react'
 import kebabCase from 'lodash/kebabCase'
+import { FieldError } from 'react-hook-form'
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectOption {
   label: string
-  options: string[]
+  value: string
 }
+
+type SelectOptions = (string | number)[] | SelectOption[]
+
+type SelectProps = Pick<FieldWrapperProps, 'label' | 'error'> &
+  ChakraSelectProps & {
+    options: SelectOptions
+    error?: FieldError
+  }
 
 export const Select: FC<SelectProps> = forwardRef<
   HTMLSelectElement,
   SelectProps
->(({ label, options, ...selectProps }, ref) => {
-  const selectId = kebabCase(label)
+>(({ label, options, error, ...selectProps }, ref) => {
+  const id = kebabCase(label)
 
   return (
-    <div className="flex flex-col gap-2">
-      <Label htmlFor={selectId}>{label}</Label>
-      <select
-        id={selectId}
+    <FieldWrapper id={id} label={label} error={error}>
+      <ChakraSelect
         ref={ref}
-        className="rounded-lg bg-gray-200 p-2 placeholder-gray-400 w-full"
         {...selectProps}
+        id={id}
+        size="lg"
+        variant="filled"
+        isInvalid={!!error}
       >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </div>
+        {options.map((o) => {
+          if (typeof o === 'object') {
+            return (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            )
+          } else {
+            return (
+              <option key={o} value={o}>
+                {o}
+              </option>
+            )
+          }
+        })}
+      </ChakraSelect>
+    </FieldWrapper>
   )
 })
 

@@ -22,6 +22,7 @@ interface TimeCardProps {
   taskTime: TaskLength
   completed: boolean
   type: TaskType
+  onEdit: () => void
 }
 
 export const TimeCard: FC<TimeCardProps> = ({
@@ -30,15 +31,18 @@ export const TimeCard: FC<TimeCardProps> = ({
   startTime,
   taskTime,
   completed,
-  type
+  type,
+  onEdit
 }) => {
+  const isNotFreeTime = type !== 'free-time'
+
   const wrapperClasses = classNames({
     block: true,
     'w-full': true,
     'px-4': true,
     'py-2': true,
     [typeToBgColor(type)]: true,
-    [typeToHoverBgColor(type)]: true,
+    [typeToHoverBgColor(type)]: isNotFreeTime,
     'border-l-8': true,
     [typeToBorderColor(type)]: true,
     'rounded-l-lg': type !== 'free-time',
@@ -82,9 +86,14 @@ export const TimeCard: FC<TimeCardProps> = ({
     'h-auto': true
   })
 
+  const Tag = isNotFreeTime ? 'button' : 'div'
+
   return (
     <div className="flex flex-row">
-      <button className={wrapperClasses}>
+      <Tag
+        className={wrapperClasses}
+        onClick={isNotFreeTime ? onEdit : undefined}
+      >
         <div className="flex flex-col justify-between text-left h-full">
           <div>
             <div className="flex flex-row items-center gap-3">
@@ -101,7 +110,7 @@ export const TimeCard: FC<TimeCardProps> = ({
             </span>
           </div>
         </div>
-      </button>
+      </Tag>
       {type !== 'free-time' && (
         <button className={buttonClasses} aria-label={`Complete ${title}`}>
           <CheckIcon className="w-6" />

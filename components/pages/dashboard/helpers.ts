@@ -4,7 +4,6 @@ import {
   format,
   addHours,
   addMinutes,
-  isWithinInterval,
   parse,
   areIntervalsOverlapping,
   Interval,
@@ -15,14 +14,15 @@ import {
 const START_HOUR = 8
 const END_HOUR = 22
 
-function newFreeTimeTask(date: Date, length: string): Task {
+function newFreeTimeTask(date: Date, length: string): Task & { id: string } {
   return {
     name: 'Free time',
     desc: 'Do whatever you want!',
     startTime: format(date, 'HH:mm'),
     length,
     type: 'free-time',
-    completed: false
+    completed: false,
+    id: ''
   }
 }
 
@@ -39,31 +39,27 @@ export function dateStrToDate(dateStr: string) {
   return parse(dateStr, 'HH:mm', new Date())
 }
 
-export function computeFreeTime(tasks: Task[]): Task[] {
-  const freeTimes: Task[] = []
+export function taskToInterval(task: Task): Interval {
+  return {
+    start: dateStrToDate(task.startTime),
+    end: addMinutes(dateStrToDate(task.startTime), Number(task.length))
+  }
+}
+
+export function computeFreeTime(
+  tasks: (Task & { id: string })[]
+): (Task & { id: string })[] {
+  const freeTimes: (Task & { id: string })[] = []
 
   for (let i = START_HOUR; i < END_HOUR; i++) {
     const startOfHour = hourToDate(i)
     const endOfHour = addHours(startOfHour, 1)
 
-    // const hourHasTasks = tasks.some((task) =>
-    //   isWithinInterval(dateStrToDate(task.startTime), {
-    //     start: startOfHour,
-    //     end: endOfHour
-    //   })
-    // )
-
     const hourHasTasks = tasks.some((task) =>
-      areIntervalsOverlapping(
-        {
-          start: dateStrToDate(task.startTime),
-          end: addMinutes(dateStrToDate(task.startTime), Number(task.length))
-        },
-        {
-          start: startOfHour,
-          end: endOfHour
-        }
-      )
+      areIntervalsOverlapping(taskToInterval(task), {
+        start: startOfHour,
+        end: endOfHour
+      })
     )
 
     if (hourHasTasks) {
@@ -75,13 +71,7 @@ export function computeFreeTime(tasks: Task[]): Task[] {
             end: addMinutes(addMinutes(startOfHour, j * 15), taskLength)
           }
           const isOverlapping = [...tasks, ...freeTimes].some((task) =>
-            areIntervalsOverlapping(startInterval, {
-              start: dateStrToDate(task.startTime),
-              end: addMinutes(
-                dateStrToDate(task.startTime),
-                Number(task.length)
-              )
-            })
+            areIntervalsOverlapping(startInterval, taskToInterval(task))
           )
           if (!isOverlapping) {
             freeTimes.push(
@@ -98,7 +88,9 @@ export function computeFreeTime(tasks: Task[]): Task[] {
   return freeTimes
 }
 
-export function sortTasks(tasks: Task[]): Task[] {
+export function sortTasks(
+  tasks: (Task & { id: string })[]
+): (Task & { id: string })[] {
   return [...tasks].sort((a, b) => {
     if (isBefore(dateStrToDate(a.startTime), dateStrToDate(b.startTime))) {
       return -1
