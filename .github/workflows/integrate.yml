@@ -1,5 +1,5 @@
 name: Integration
-on: ['pull-request']
+on: ['pull_request']
 jobs:
   Validate:
     runs-on: ubuntu-latest
