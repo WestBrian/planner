@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Days, days } from './types'
 
-interface DaySelectorProps {
+export interface DaySelectorProps {
   currentDay: Days
   onChange: (day: Days) => void
 }
