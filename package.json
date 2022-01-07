@@ -10,7 +10,11 @@
     "test": "jest --watch",
     "test:ci": "jest --ci --collectCoverage",
     "format": "prettier '**/*.{js,jsx,ts,tsx,json,css,scss,html,md}' --write",
-    "validate": "tsc --noEmit && npm run lint && npm run test:ci"
+    "validate": "tsc --noEmit && npm run lint && npm run test:ci",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*": "prettier --ignore-unknown --write"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.7.2",
@@ -38,7 +42,9 @@
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.0",
     "eslint-config-prettier": "^8.3.0",
+    "husky": "^7.0.4",
     "jest": "^27.4.7",
+    "lint-staged": "^12.1.5",
     "postcss": "^8.3.6",
     "prettier": "^2.3.2",
     "tailwindcss": "^2.2.7",
