@@ -1,6 +1,6 @@
 import { FC, useState } from 'react'
 import { motion } from 'framer-motion'
-import { PlusIcon, XIcon } from '@heroicons/react/solid'
+import { PlusIcon } from '@heroicons/react/solid'
 import classNames from 'classnames'
 import { useWindowSize } from '@react-hook/window-size'
 import { addTask, Task } from '../../services/tasks'
@@ -26,7 +26,7 @@ const variants = {
   }
 }
 
-interface NewTaskButtonProps {
+export interface NewTaskButtonProps {
   userTasks: Task[]
   selectedDay: Days
 }
@@ -75,6 +75,7 @@ export const NewTaskButton: FC<NewTaskButtonProps> = ({
       aria-label={!isOpen ? 'add new task' : undefined}
       role={!isOpen ? 'button' : undefined}
       onClick={!isOpen ? open : undefined}
+      data-testid="new-task-wrapper"
     >
       {isOpen ? (
         <TaskForm

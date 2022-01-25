@@ -15,7 +15,7 @@ import classNames from 'classnames'
 import { ClockIcon, CheckIcon } from '@heroicons/react/outline'
 import { format, addMinutes } from 'date-fns'
 
-interface TimeCardProps {
+export interface TimeCardProps {
   title: string
   desc?: string
   startTime: Date
@@ -93,6 +93,7 @@ export const TimeCard: FC<TimeCardProps> = ({
       <Tag
         className={wrapperClasses}
         onClick={isNotFreeTime ? onEdit : undefined}
+        data-testid="task-wrapper"
       >
         <div className="flex flex-col justify-between text-left h-full">
           <div>

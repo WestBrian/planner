@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { RegisterForm, RegisterFormValues } from '../../register-form'
 import { createUser } from '../../../services/auth'
 import { useRouter } from 'next/router'

@@ -57,7 +57,7 @@ export const TypePicker: FC<TypePickerProps> = ({ value, onChange }) => {
 
   return (
     <FieldWrapper id={id} label="Task type">
-      <Wrap {...getRootProps()}>
+      <Wrap {...getRootProps()} name="task-type">
         {without(taskTypes, 'free-time')
           .sort()
           .map((taskType) => (

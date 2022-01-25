@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { TaskType } from './types'
 
 export function typeToBgColor(type: TaskType) {

@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { FormEvent, useState } from 'react'
 import { TextField } from '../../textfield'
 import { Button } from '@chakra-ui/react'
