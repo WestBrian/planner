@@ -7,7 +7,7 @@ interface AuthContextValues {
   user?: firebase.User | null
 }
 
-const AuthContext = createContext<AuthContextValues>({
+export const AuthContext = createContext<AuthContextValues>({
   user: null
 })
 

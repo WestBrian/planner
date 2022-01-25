@@ -9,7 +9,7 @@ import { TypePicker } from '../type-picker'
 import { Textarea } from '../textarea'
 import { useForm } from 'react-hook-form'
 import { Task } from '../../services/tasks'
-import { addMinutes, areIntervalsOverlapping, format } from 'date-fns'
+import { addMinutes, areIntervalsOverlapping } from 'date-fns'
 import { taskToInterval } from '../pages/dashboard/helpers'
 
 function removeCurrentTask(tasks: Task[], id?: string) {
@@ -29,7 +29,7 @@ export interface FormState {
   description: string
 }
 
-interface TaskFormProps {
+export interface TaskFormProps {
   heading: string
   submitButtonText?: string
   defaultValues?: Partial<FormState>
@@ -83,7 +83,7 @@ export const TaskForm: FC<TaskFormProps> = ({
   }, [register])
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form name="task form" onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing="8">
         <Flex align="center" justify="space-between">
           <Heading as="h1" size="sm">

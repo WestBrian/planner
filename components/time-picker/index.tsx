@@ -92,8 +92,9 @@ export const TimePicker: FC<TimePickerProps> = ({
       )})`}
       error={error}
     >
-      <Stack direction="row" spacing="4" align="center">
+      <Stack direction={['column', 'row']} spacing="4" align="center">
         <Select
+          id={id}
           size="lg"
           variant="filled"
           value={hours}
